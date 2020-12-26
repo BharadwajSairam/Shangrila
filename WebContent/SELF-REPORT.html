@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+ <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<title>Test Report Submission</title>
+</head>
+<style>
+.container{
+padding-right:20%;
+padding-left:20%;
+
+}
+.form-group {
+  margin: auto;
+  width: 50%;height:90%;
+  padding: 1px;
+}
+.enableOnInput{
+color:black;
+border-radius: 8px;
+background-color: dodgerblue;
+}
+.enableOnInput:hover {
+  background-color: #4CAF50; /* Green */
+  color: white;
+}
+</style>
+<body>
+
+<div class="text-center">
+<h1>Report</h1>
+</div>
+<div class="container p-3 my-3 >
+<form class="needs-validation" action="ReportValidation" method="POST" id="login-form">
+<div class="form-group">
+<label for="email">Email:</label> 
+        <input type="email" class="form-control"  name="email" id="email" />
+        <span id="check-e"></span>
+        <div id="emailError" style="color:red;font-size:70%"></div>
+        </div>
+	
+	<div class="form-group">
+	<label for="name">Full name:</label>
+	<input  class="form-control" type="text" name="name"/>
+	</div>
+	<div class="form-group">
+	<label for="age">Age:</label>
+	<input  class="form-control" type="text" name="age"/>
+	</div>
+	<div class="form-group">
+	<label for="gender">Gender:</label>
+	<input  class="form-control" list="genders" name="gender"/>
+	<datalist id="genders">
+    <option value="M">
+    <option value="F">
+    <option value="Other">
+  </datalist><br/>
+  </div>
+  <div class="form-group">
+	<label for="address">Address:</label>
+	<input  class="form-control" type="text" name="address"/>
+	</div>
+	<div class="form-group">
+	<label for="postcode">Postcode:</label>
+	<input  class="form-control" type="text" name="postcode"/>
+	</div>
+	<div class="form-group">
+	<label for="Tnncode">TNNCode:</label>
+	<input  class="form-control" type="text" name ="Tnncode" id="Tnncode"/>
+	<div id="TNNError" style="color:red;font-size:70%"></div>
+	</div>
+	<div class="form-group">
+	<label for="result">Test Result:</label>
+	<input  class="form-control" list="results" name="result"/>
+	<datalist id="results">
+    <option value="Positive">
+    <option value="Negative">
+    <option value="NoResult">
+  </datalist><br/>
+	</div>
+	<div class="form-group">
+	<button type="submit" class="enableOnInput" name="submit" id="sub">
+     		 <span class="glyphicon glyphicon-log-in"></span> &nbsp; Submit
+   </button> 
+	</div>
+</div>
+</form>
+</div>
+
+
+<script type="text/javascript">
+$(document).ready(function(){
+	//$('.enableOnInput').prop('disabled', true);
+    $("#Tnncode").keyup(function(){
+    	console.log("in");
+    	  $.ajax({
+    	      type: "GET",
+    	      url: "/CW2Beta/ReportValidation?TNNcode="+$("#Tnncode").val(),
+    	      success: function(result){
+    	    	  console.log("result :"+result)
+    	    	  var res=$.trim(result);
+    	    	  if(res!=""){
+    	    		  document.getElementById("TNNError").innerHTML=result;
+    	    	  }else {
+    	    		  document.getElementById("TNNError").innerHTML="";
+    	    	}
+    	    		  
+    	      }
+    	});  
+	});  
+
+    $("#email").keyup(function(){
+  	  $.ajax({
+  	      type: "GET",
+  	      url: "/CW2Beta/ReportValidation?email="+$("#email").val(),
+  	      success: function(result){
+  	    	var res=$.trim(result);
+  	    	console.log("result2 :"+result+":::")
+  	    	if(res!=""){
+	    		  document.getElementById("emailError").innerHTML=result;
+	    	  }else {
+	    		  document.getElementById("emailError").innerHTML="";
+	    	  }
+  	    	 	  
+  	      }
+  	});  
+	});
+    $(".form-control").keyup(function () {
+        if ($(this).val() == '') {
+            $('.enableOnInput').prop('disabled', true);
+        } else {
+            $('.enableOnInput').prop('disabled', false);
+        }
+    });
+    $("#sub").hover(function () {
+    	console.log("--"+document.getElementById("TNNError").innerHTML+"--");
+        if (document.getElementById("TNNError").innerHTML == '' && document.getElementById("emailError").innerHTML == '') {
+            $('.enableOnInput').prop('disabled', false);
+        } else {
+            $('.enableOnInput').prop('disabled', true);
+        }
+    });
+});
+</script>	
+
+</body>
+</html>
